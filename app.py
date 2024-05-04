@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
+import argparse
 import re
+import os
+
 
 template = """<!DOCTYPE html>
 <html>
@@ -18,6 +21,11 @@ def txt_to_html(input_file, output_file):
     with open(input_file, 'r') as f:
         # Ler o conteúdo do arquivo de texto
         text_content = f.readlines()
+
+    # Se o nome do arquivo de saída não foi fornecido, gerar automaticamente
+    if not output_file:
+        # Obter o nome do arquivo de entrada sem a extensão
+        output_file = os.path.splitext(input_file)[0] + ".html"
 
     # Abrir o arquivo de saída para escrita
     with open(output_file, 'w') as f:
@@ -51,8 +59,14 @@ def txt_to_html(input_file, output_file):
         # Escrever o final do arquivo HTML
         f.write("\n</body>\n</html>")
 
-# Exemplo de uso
-input_file = 'exemplo.txt'  # Nome do arquivo de texto de entrada
-output_file = 'saida.html'  # Nome do arquivo HTML de saída
+if __name__ == "__main__":
+    # Configurar a análise de argumentos da linha de comando
+    parser = argparse.ArgumentParser(description='Converte arquivo TXT para HTML')
+    parser.add_argument('input_file', type=str, help='Nome do arquivo de entrada TXT')
+    parser.add_argument('output_file', nargs='?', type=str, help='Nome do arquivo de saída HTML')
 
-txt_to_html(input_file, output_file)
+    # Obter os argumentos da linha de comando
+    args = parser.parse_args()
+
+    # Chamar a função para converter o arquivo TXT para HTML
+    txt_to_html(args.input_file, args.output_file)
